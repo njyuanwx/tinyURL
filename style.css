@@ -52,10 +52,29 @@ input[type=button]{
     background-color: lightskyblue;
     margin-left: auto;
     margin-right: auto;
-    width: 40%;
+    width: 700px;
     border-radius: 20px;
 }
 .div1 {
     background-color: dodgerblue;
     border-radius: 40px;
+}
+table {
+    border-collapse: collapse;
+    border: 2px solid black;
+    width: 800px;
+}
+td {
+    width: 400px;
+    height: 2em;
+    border: 1px solid #4b4b4b;
+    text-align: center;
+    font-size: 20px;
+}
+th{
+    width: 400px;
+    height: 2em;
+    border: 1px solid #4b4b4b;
+    text-align: center;
+    font-size: 20px;
 }
