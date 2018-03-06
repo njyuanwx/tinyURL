@@ -1,15 +1,27 @@
 h1 {
     text-align: center;
-    color: blue;
+    color: white;
+    font-family: Verdana;
 }
 h2 {
     color: dodgerblue;
+    font-family: "Chalkboard SE";
+}
+h3 {
+    color: midnightblue;
+    display : inline;
+    font-size: 22px;
+    font-family: "Helvetica Neue";
 }
 p {
     font-size: 20px;
+    display : inline;
+    font-family: "Helvetica Neue";
 }
 li {
     font-size: 20px;
+    line-height: 30px;
+    font-family: "Helvetica Neue";
 }
 input[type=text] {
     border: 2px solid #aaa;
@@ -32,4 +44,18 @@ input[type=button]{
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+}
+.div3 {
+    border-top: lightskyblue 1px solid;
+    border-bottom: lightskyblue 1px solid;
+    line-height: 60px;
+    background-color: lightskyblue;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    border-radius: 20px;
+}
+.div1 {
+    background-color: dodgerblue;
+    border-radius: 50px;
 }
