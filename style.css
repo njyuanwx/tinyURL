@@ -1,0 +1,35 @@
+h1 {
+    text-align: center;
+    color: blue;
+}
+h2 {
+    color: dodgerblue;
+}
+p {
+    font-size: 20px;
+}
+li {
+    font-size: 20px;
+}
+input[type=text] {
+    border: 2px solid #aaa;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 5px;
+    transation: .4s;
+}
+input[type=text]:focus{
+    border-color: dodgerblue;
+    box-shadow:0 0 8px 0 dodgerblue;
+}
+input[type=button]{
+    background-color: darkblue;
+    border: none;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
