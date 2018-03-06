@@ -43,7 +43,7 @@ input[type=button]{
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 16px;
+    font-size: 20px;
 }
 .div3 {
     border-top: lightskyblue 1px solid;
@@ -57,5 +57,5 @@ input[type=button]{
 }
 .div1 {
     background-color: dodgerblue;
-    border-radius: 50px;
+    border-radius: 40px;
 }
