@@ -112,12 +112,12 @@ app.get("/:shortURL", function(req, res){
 
 		}
 		else {
-			console.log("Find the target record");
-			console.log(record);
 			if (record.length == 0) {
-				res.send("404: Page Not Found");
+				res.render("404Page");
 			}
 			else {
+				console.log("Find the target record");
+				console.log(record);
 				var originalUrl = record[0].originalURL;
 				console.log(originalUrl);
 				res.redirect(originalUrl);
