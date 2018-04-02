@@ -70,34 +70,77 @@ app.get("/", function(req, res){
 app.post("/urls", function(req, res){
 	//tranform a url
     var originalUrl = req.body.originalURL;
+    var customizedUrl = req.body.customizedURL;
 
-    if (originalUrl == "") {
+
+
+    if (originalUrl == "") {  //make sure valid input for original website
     	res.render("homepage");
     }
     else {
     	//todo : transform function
-	    var shortUrl = dbcounter.toString();
-	    while(shortUrl.length < 6) {
+    	var shortUrl = dbcounter.toString();
+    	while(shortUrl.length < 6) {
 	    	shortUrl = "0" + shortUrl;
 	    }
-	    //var newTinyURL = new Url 
-	    Url.create(
-	    	{
-	    		shortURL : shortUrl,
-	    		originalURL : originalUrl
+    	if (customizedUrl != "") {
+    		shortUrl = customizedUrl;
+    		Url.find({shortURL : customizedUrl}, function(err, record){
+    			console.log("exist cusURL is " + record);
+    			if (err) {
+    				console.log(err);
+    			}
+    			else {
+    				if (record.length == 0) { // Customized URL not used before			
+    					//var newTinyURL = new Url 
+    					Url.create(
+					    	{
+					    		shortURL : shortUrl,
+					    		originalURL : originalUrl
 
-			}, function(err, newTinyURL){
-				if (err) {
-					console.log(err);
-				}
-				else {
-					console.log("Create and save a new TinyURL");
-					console.log(newTinyURL);
-					dbcounter += 1;
-				}
-			});
+							}, function(err, newTinyURL){
+								if (err) {
+									console.log(err);
+								}
+								else {
+									console.log("Create and save a new TinyURL");
+									console.log(newTinyURL);
+								}
+							});
 
-	    res.send("URL you want to tranform is " + originalUrl + "Shortened URL is " + shortUrl);
+					    res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
+					    
+    				}
+    				else {
+    					res.send("Customized URL you provided has been used before");
+    					//res.end();
+    				}
+    			}
+    		});
+    	}
+    	else {
+    		Url.create(
+		    	{
+		    		shortURL : shortUrl,
+		    		originalURL : originalUrl
+
+				}, function(err, newTinyURL){
+					if (err) {
+						console.log(err);
+					}
+					else {
+						console.log("Create and save a new TinyURL");
+						console.log(newTinyURL);
+						dbcounter += 1;
+						
+					}
+				});
+
+		    res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
+    	}
+
+    	
+	     
     } 
     //res.render("homepage");
 });
