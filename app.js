@@ -83,7 +83,8 @@ app.post("/urls", function(req, res){
     	while(shortUrl.length < 6) {
 	    	shortUrl = "0" + shortUrl;
 	    }
-    	if (customizedUrl != "") {
+	    //check if cusURL is empty
+    	if (customizedUrl != "") { 
     		shortUrl = customizedUrl;
     		Url.find({shortURL : customizedUrl}, function(err, record){
     			console.log("exist cusURL is " + record);
@@ -108,7 +109,8 @@ app.post("/urls", function(req, res){
 								}
 							});
 
-					    res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
+					    //res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
+					    res.render("resultPage", {shortUrl : shortUrl, originalUrl : originalUrl});
 					    
     				}
     				else {
@@ -136,13 +138,10 @@ app.post("/urls", function(req, res){
 					}
 				});
 
-		    res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
-    	}
-
-    	
-	     
+		    //res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
+		    res.render("resultPage", {shortUrl : shortUrl, originalUrl : originalUrl});
+    	}	     
     } 
-    //res.render("homepage");
 });
 
 
