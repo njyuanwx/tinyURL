@@ -10,7 +10,7 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true }));
 app.set("view engine", "ejs");
 
-mongoose.connect("mongodb://localhost/tinyurls");
+mongoose.connect("mongodb://vcm-3215.vm.duke.edu:27017/tinyurls");
 
 var tinyURLSchema = new mongoose.Schema({
 	shortURL : String,
@@ -146,7 +146,7 @@ app.post("/urls", function(req, res){
 
 
 //redirection logic
-app.get("/:shortURL", function(req, res){
+app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002      /:A/:B
 	var shortUrl = req.params.shortURL;
 	Url.find({shortURL : shortUrl}, 'originalURL', function(err, record){
 		if (err) {
@@ -167,6 +167,12 @@ app.get("/:shortURL", function(req, res){
 		}
 	});
 });
+
+
+// app.get("/:A/:B", function(){
+// 	var a = req.params.A;
+// 	var b = 
+// })
 
 
 
