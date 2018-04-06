@@ -78,6 +78,10 @@ app.post("/urls", function(req, res){
     	res.render("homepage");
     }
     else {
+    	// Checks whether input url contains "https" or "http". If not, adds "https://" before the url.s
+    	if (originalUrl.substring(0, 8) != "https://" && originalUrl.substring(0, 7) != "http://") {
+    		originalUrl = "https://" + originalUrl;
+		}
     	//todo : transform function
     	var shortUrl = dbcounter.toString();
     	while(shortUrl.length < 6) {
