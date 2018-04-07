@@ -159,7 +159,7 @@ app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002 
 		}
 		else {
 			if (record.length == 0) {
-				res.render("404Page");
+				res.render("404page");
 			}
 			else {
 				console.log("Find the target record");
@@ -187,6 +187,11 @@ app.get("*", function(req, res){
 });
 
 
-app.listen(3000, function(){
-	console.log("Serving on Port 3000");
+// app.listen(3000, function(){
+// 	console.log("Serving on Port 3000");
+// }); 
+
+app.listen(8080, process.env.IP, function(){
+	//console.log("Serving on Port " + precess.env.PORT);
+	console.log("Serving on Port 8080");
 }); 
