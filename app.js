@@ -10,7 +10,8 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true }));
 app.set("view engine", "ejs");
 
-mongoose.connect("mongodb://vcm-3215.vm.duke.edu:27017/tinyurls");
+//mongoose.connect("mongodb://vcm-3215.vm.duke.edu:27017/tinyurls");
+mongoose.connect("mongodb://localhost/tinyurls");
 
 var tinyURLSchema = new mongoose.Schema({
 	shortURL : String,
@@ -62,6 +63,9 @@ Url.find({}, function(err, records){
 
 // "/" => "homepage"
 app.get("/", function(req, res){
+	console.log("Request IP " + req.ip);
+	console.log("Referer " + req.headers.referer);
+	console.log("Date is " + req.get('Date'));
 	res.render("homepage");
 });
 
@@ -187,11 +191,11 @@ app.get("*", function(req, res){
 });
 
 
-// app.listen(3000, function(){
-// 	console.log("Serving on Port 3000");
-// }); 
-
-app.listen(8080, process.env.IP, function(){
-	//console.log("Serving on Port " + precess.env.PORT);
-	console.log("Serving on Port 8080");
+app.listen(3000, function(){
+	console.log("Serving on Port 3000");
 }); 
+
+// app.listen(8080, process.env.IP, function(){
+// 	//console.log("Serving on Port " + precess.env.PORT);
+// 	console.log("Serving on Port 8080");
+// }); 
