@@ -78,7 +78,7 @@ app.post("/urls", function(req, res){
     	res.render("homepage");
     }
     else {
-    	// Checks whether input url contains "https" or "http". If not, adds "https://" before the url.s
+    	// Checks whether input url contains "https" or "http". If not, adds "https://" before the url.
     	if (originalUrl.substring(0, 8) != "https://" && originalUrl.substring(0, 7) != "http://") {
     		originalUrl = "https://" + originalUrl;
 		}
