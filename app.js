@@ -15,7 +15,8 @@ mongoose.connect("mongodb://localhost/tinyurls");
 
 var tinyURLSchema = new mongoose.Schema({
 	shortURL : String,
-	originalURL : String
+	originalURL : String,
+	clickNum: Number
 });
 
 var Url = mongoose.model("Url", tinyURLSchema);
@@ -77,8 +78,8 @@ app.post("/urls", function(req, res){
     var customizedUrl = req.body.customizedURL;
 
 
-
-    if (originalUrl == "") {  //make sure valid input for original website
+    // Checks whether the input for original website is valid. If yes, returns to homepage.
+    if (originalUrl == "") {
     	res.render("homepage");
     }
     else {
@@ -91,7 +92,7 @@ app.post("/urls", function(req, res){
     	while(shortUrl.length < 6) {
 	    	shortUrl = "0" + shortUrl;
 	    }
-	    //check if cusURL is empty
+	    // Checks whether if the customized URL blank is empty. If yes, assigned customized URL to shortened URL.
     	if (customizedUrl != "") { 
     		shortUrl = customizedUrl;
     		Url.find({shortURL : customizedUrl}, function(err, record){
@@ -105,7 +106,8 @@ app.post("/urls", function(req, res){
     					Url.create(
 					    	{
 					    		shortURL : shortUrl,
-					    		originalURL : originalUrl
+					    		originalURL : originalUrl,
+								clickNum: 0
 
 							}, function(err, newTinyURL){
 								if (err) {
@@ -132,7 +134,8 @@ app.post("/urls", function(req, res){
     		Url.create(
 		    	{
 		    		shortURL : shortUrl,
-		    		originalURL : originalUrl
+		    		originalURL : originalUrl,
+                    clickNum: 0
 
 				}, function(err, newTinyURL){
 					if (err) {
@@ -153,10 +156,10 @@ app.post("/urls", function(req, res){
 });
 
 
-//redirection logic
+// Redirects shortened URL to original URL.
 app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002      /:A/:B
 	var shortUrl = req.params.shortURL;
-	Url.find({shortURL : shortUrl}, 'originalURL', function(err, record){
+	Url.find({"shortURL" : shortUrl}, {}, function(err, record){
 		if (err) {
 			console.log(err);
 
@@ -169,6 +172,19 @@ app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002 
 				console.log("Find the target record");
 				console.log(record);
 				var originalUrl = record[0].originalURL;
+				var clicknum = record[0].clickNum + 1;
+				// Updates the counter by 1.
+				record[0].set({clickNum : clicknum});
+				// Save updated data in database.
+                record[0].save(function(err, newClickNum) {
+                	if (err) {
+                		console.log(err);
+					} else {
+                		console.log("Update the click number for current URL");
+                		console.log(clicknum);
+                		console.log(newClickNum);
+					}
+				});
 				console.log(originalUrl);
 				res.redirect(originalUrl);
 			}
