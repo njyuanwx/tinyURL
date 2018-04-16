@@ -16,7 +16,11 @@ mongoose.connect("mongodb://localhost/tinyurls");
 var tinyURLSchema = new mongoose.Schema({
 	shortURL : String,
 	originalURL : String,
-	clickNum: Number
+	// Sets default value to 0. Handles cases that the first 13 records doesn't contain "clickNum" field.
+	clickNum:  {
+		type: Number,
+		default : 0
+	}
 });
 
 var Url = mongoose.model("Url", tinyURLSchema);
@@ -59,7 +63,6 @@ Url.find({}, function(err, records){
 		console.log(records);
 	}
 });
-
 
 
 // "/" => "homepage"
@@ -207,7 +210,7 @@ app.get("*", function(req, res){
 });
 
 // Redirects to show top 5 clicked URLs.
-app.post("/topClick", function(req, res){
+app.post("/topClick", function(req, res) {
 	res.render("topNclickedPage");
 });
 
