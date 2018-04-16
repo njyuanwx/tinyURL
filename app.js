@@ -206,6 +206,12 @@ app.get("*", function(req, res){
 	res.render("404page");
 });
 
+// Redirects to show top 5 clicked URLs.
+app.post("/topClick", function(req, res){
+	res.render("topNclickedPage");
+});
+
+
 
 app.listen(3000, function(){
 	console.log("Serving on Port 3000");
