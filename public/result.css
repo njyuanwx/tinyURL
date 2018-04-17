@@ -1,0 +1,22 @@
+.c {
+    text-align: center;
+    display: block;
+    position: relative;
+    width: 80%;
+    margin: 100px auto;
+}
+
+.btn{
+    background-color: rgb( 255, 255, 255 );
+    position: relative;
+    display: inline-block;
+    width: 358px;
+    padding: 5px;
+    z-index: 5;
+    font-size: 25px;
+    margin:0 auto;
+    color: forestgreen;
+    text-decoration: none;
+    margin-right: 10px;
+    border-color: forestgreen;
+}

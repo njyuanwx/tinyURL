@@ -223,8 +223,6 @@ app.post("/:topClick", function(req, res) {
     });
 });
 
-
-
 app.listen(3000, function(){
 	console.log("Serving on Port 3000");
 }); 
@@ -232,4 +230,4 @@ app.listen(3000, function(){
 // app.listen(8080, process.env.IP, function(){
 // 	//console.log("Serving on Port " + precess.env.PORT);
 // 	console.log("Serving on Port 8080");
-// }); 
+// });

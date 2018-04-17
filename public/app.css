@@ -1,27 +1,9 @@
-h1 {
-    text-align: center;
-    color: white;
-    font-family: Verdana;
-}
-h2 {
-    color: dodgerblue;
-    font-family: "Chalkboard SE";
-}
-h3 {
-    color: midnightblue;
-    display : inline;
-    font-size: 22px;
-    font-family: "Helvetica Neue";
-}
-p {
-    font-size: 20px;
-    display : inline;
-    font-family: "Helvetica Neue";
+img {
+    border-radius: 50%;
 }
 li {
     font-size: 20px;
     line-height: 30px;
-    font-family: "Helvetica Neue";
 }
 input[type=text] {
     border: 2px solid #aaa;
@@ -35,46 +17,38 @@ input[type=text]:focus{
     box-shadow:0 0 8px 0 dodgerblue;
 }
 button{
-    background-color: darkblue;
-    border: none;
-    color: white;
-    padding: 10px 30px;
-    border-radius: 5px;
+    background-color: white;
+    border-color: grey;
+    color: black;
+    padding: 0px 15px;
+    border-radius: 50px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 20px;
 }
 .div3 {
-    border-top: lightskyblue 1px solid;
-    border-bottom: lightskyblue 1px solid;
+    border-top: darkgray 1px solid;
+    border-bottom: darkgray 1px solid;
     line-height: 60px;
-    background-color: lightskyblue;
+    background-image:url("http://file03.16sucai.com/2016/10/1100/16sucai_p20161007016_050.JPG");
     margin-left: auto;
     margin-right: auto;
-    width: 700px;
+    width: 750px;
     border-radius: 20px;
+    height: 400px;
 }
-.div1 {
-    background-color: dodgerblue;
-    border-radius: 40px;
+
+header {
+    padding: 154px 0 100px;
 }
-table {
-    border-collapse: collapse;
-    border: 2px solid black;
-    width: 800px;
+
+@media (min-width: 992px) {
+    header {
+        padding: 156px 0 100px;
+    }
 }
-td {
-    width: 400px;
-    height: 2em;
-    border: 1px solid #4b4b4b;
-    text-align: center;
-    font-size: 20px;
-}
-th{
-    width: 400px;
-    height: 2em;
-    border: 1px solid #4b4b4b;
-    text-align: center;
-    font-size: 20px;
+
+section {
+    padding: 150px 0;
 }
