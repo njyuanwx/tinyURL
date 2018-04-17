@@ -165,7 +165,6 @@ app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002 
 	Url.find({"shortURL" : shortUrl}, {}, function(err, record){
 		if (err) {
 			console.log(err);
-
 		}
 		else {
 			if (record.length == 0) {
@@ -210,8 +209,18 @@ app.get("*", function(req, res){
 });
 
 // Redirects to show top 5 clicked URLs.
-app.post("/topClick", function(req, res) {
-	res.render("topNclickedPage");
+app.post("/:topClick", function(req, res) {
+   Url.find({'clickNum': {$gt: 0}}, {}, {sort: {clickNum: -1}, limit: 5}, function(err, record) {
+        if (err) {
+            console.log(err);
+        } else {
+           // for (var i = 0; i < record.size(); ++i) {
+             //   console.log(i);
+            //}
+			console.log("Find " + record.length + " results.");
+            res.render("topNclickedPage", {record : record});
+		}
+    });
 });
 
 

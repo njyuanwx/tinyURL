@@ -3,13 +3,19 @@
 <h2>Top 5 Clicked URLs!</h2>
 <table id="topClickTable">
     <tbody>
-    <tr><th>URL</th><th>Count</th></tr>
-    
-    <tr><td></td><td></td></tr>
-    <tr><td></td><td></td></tr>
-    <tr><td></td><td></td></tr>
-    <tr><td></td><td></td></tr>
-    <tr><td></td><td></td></tr>
+    <tr><th>Original URL</th><th>Short URL</th><th>Count</th></tr>
+    <% for (var i = 0; i < record.length; ++i) {%>
+        <tr>
+            <td>
+                <%= record[i].originalURL%>
+            </td>
+            <td>
+                <%= record[i].shortURL%>
+            </td>
+            <td>
+                <%= record[i].clickNum%>
+            </td>
+            <% } %>
     </tbody>
 </table>
 <h2>Return to <a href="/">Home Page</a></h2>
