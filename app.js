@@ -86,9 +86,9 @@ app.post("/urls", function(req, res){
     	res.render("homepage");
     }
     else {
-    	// Checks whether input url contains "https" or "http". If not, adds "https://" before the url.
+    	// Checks whether input url contains "https" or "http". If not, adds "http://" before the url.
     	if (originalUrl.substring(0, 8) != "https://" && originalUrl.substring(0, 7) != "http://") {
-    		originalUrl = "https://" + originalUrl;
+    		originalUrl = "http://" + originalUrl;
 		}
     	//todo : transform function
     	var shortUrl = dbcounter.toString();
@@ -127,7 +127,7 @@ app.post("/urls", function(req, res){
 					    
     				}
     				else {
-    					res.send("Customized URL you provided has been used before");
+    					res.render("customized404page");
     					//res.end();
     				}
     			}
