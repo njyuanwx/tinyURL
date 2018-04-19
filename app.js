@@ -67,9 +67,9 @@ Url.find({}, function(err, records){
 
 // "/" => "homepage"
 app.get("/", function(req, res){
-	console.log("Request IP " + req.ip);
-	console.log("Referer " + req.headers.referer);
-	console.log("Date is " + req.get('Date'));
+	// console.log("Request IP " + req.ip);
+	// console.log("Referer " + req.headers.referer);
+	// console.log("Date is " + req.get('Date'));
 	res.render("homepage");
 });
 
@@ -158,6 +158,20 @@ app.post("/urls", function(req, res){
     } 
 });
 
+// Redirects to show top 5 clicked URLs.
+app.get("/topClick", function(req, res) {
+   Url.find({'clickNum': {$gt: 0}}, {}, {sort: {clickNum: -1}, limit: 5}, function(err, record) {
+        if (err) {
+            console.log(err);
+        } else {
+           // for (var i = 0; i < record.size(); ++i) {
+             //   console.log(i);
+            //}
+			console.log("Find " + record.length + " results.");
+            res.render("topNclickedPage", {record : record});
+		}
+    });
+});
 
 // Redirects shortened URL to original URL.
 app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002      /:A/:B
@@ -201,27 +215,13 @@ app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002 
 // })
 
 
-
 // other urls without meaning
 app.get("*", function(req, res){
 	// res.send("404: Page Not Found");
 	res.render("404page");
 });
 
-// Redirects to show top 5 clicked URLs.
-app.post("/:topClick", function(req, res) {
-   Url.find({'clickNum': {$gt: 0}}, {}, {sort: {clickNum: -1}, limit: 5}, function(err, record) {
-        if (err) {
-            console.log(err);
-        } else {
-           // for (var i = 0; i < record.size(); ++i) {
-             //   console.log(i);
-            //}
-			console.log("Find " + record.length + " results.");
-            res.render("topNclickedPage", {record : record});
-		}
-    });
-});
+
 
 app.listen(3000, function(){
 	console.log("Serving on Port 3000");
