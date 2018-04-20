@@ -42,6 +42,7 @@ var Url = mongoose.model("Url", tinyURLSchema);
 
 //get the counter when server started (asynchronous!!!!!)
 var dbcounter = 0;
+var charmap = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 Url.count({}, function(err, count){
 	if (err) {
@@ -81,8 +82,9 @@ app.post("/urls", function(req, res){
     var customizedUrl = req.body.customizedURL;
 
 
-    // Checks whether the input for original website is valid. If yes, returns to homepage.
+    // Checks whether the input for original website is valid. If no, returns to homepage.
     if (originalUrl == "") {
+    	//alert("Empty Input");
     	res.render("homepage");
     }
     else {
@@ -90,11 +92,17 @@ app.post("/urls", function(req, res){
     	if (originalUrl.substring(0, 8) != "https://" && originalUrl.substring(0, 7) != "http://") {
     		originalUrl = "http://" + originalUrl;
 		}
-    	//todo : transform function
-    	var shortUrl = dbcounter.toString();
-    	while(shortUrl.length < 6) {
-	    	shortUrl = "0" + shortUrl;
-	    }
+    	//todo : multiple server transform function
+    	var shortUrl = "";
+    	for (var i=0; i<6; i++) {
+    		shortUrl = charmap.charAt(dbcounter%62) + shortUrl;
+    		dbcounter = dbcounter/62;
+    	}
+    	// var shortUrl = dbcounter.toString();
+    	// while(shortUrl.length < 6) {
+	    // 	shortUrl = "0" + shortUrl;
+	    // }
+
 	    // Checks whether if the customized URL blank is empty. If yes, assigned customized URL to shortened URL.
     	if (customizedUrl != "") { 
     		shortUrl = customizedUrl;
