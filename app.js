@@ -6,6 +6,9 @@ var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 
+var redisClient = require('redis').createClient;
+var redis = redisClient(6379, 'localhost');
+
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true }));
 app.set("view engine", "ejs");
@@ -98,10 +101,6 @@ app.post("/urls", function(req, res){
     		shortUrl = charmap.charAt(dbcounter%62) + shortUrl;
     		dbcounter = dbcounter/62;
     	}
-    	// var shortUrl = dbcounter.toString();
-    	// while(shortUrl.length < 6) {
-	    // 	shortUrl = "0" + shortUrl;
-	    // }
 
 	    // Checks whether if the customized URL blank is empty. If yes, assigned customized URL to shortened URL.
     	if (customizedUrl != "") { 
@@ -184,36 +183,85 @@ app.get("/topClick", function(req, res) {
 // Redirects shortened URL to original URL.
 app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002      /:A/:B
 	var shortUrl = req.params.shortURL;
-	Url.find({"shortURL" : shortUrl}, {}, function(err, record){
-		if (err) {
-			console.log(err);
+
+	redis.get(shortUrl, function (err, reply) {
+        if (err){
+        	console.log(err);
+        }
+        else if (reply){ //Book exists in cache
+			var record = JSON.parse(reply);
+			var originalUrl = record.originalURL;
+			var clicknum = record.clickNum + 1;
+			// // Updates the counter by 1.
+			// record.set({clickNum : clicknum});
+			// // Save updated data in database.
+   //          record.save(function(err, newClickNum) {
+   //          	if (err) {
+   //          		console.log(err);
+			// 	} else {
+   //          		console.log("Update the click number for current URL");
+   //          		console.log(clicknum);
+   //          		console.log(newClickNum);
+			// 	}
+			// });
+			console.log(originalUrl);
+			res.redirect(originalUrl);
 		}
-		else {
-			if (record.length == 0) {
-				res.render("404page");
-			}
-			else {
-				console.log("Find the target record");
-				console.log(record);
-				var originalUrl = record[0].originalURL;
-				var clicknum = record[0].clickNum + 1;
-				// Updates the counter by 1.
-				record[0].set({clickNum : clicknum});
-				// Save updated data in database.
-                record[0].save(function(err, newClickNum) {
-                	if (err) {
-                		console.log(err);
-					} else {
-                		console.log("Update the click number for current URL");
-                		console.log(clicknum);
-                		console.log(newClickNum);
+        else {
+            //data doesn't exist in cache - we need to query the main mongodb database
+            Url.find({"shortURL" : shortUrl}, {}, function(err, record){
+				if (err) {
+					console.log(err);
+				}
+				else {
+					if (record.length == 0) {
+						res.render("404page");
 					}
-				});
-				console.log(originalUrl);
-				res.redirect(originalUrl);
-			}
-		}
-	});
+					else {
+						console.log("Find the target record");
+						console.log(record);
+						var originalUrl = record[0].originalURL;
+						var clicknum = record[0].clickNum + 1;
+						// Updates the counter by 1.
+						record[0].set({clickNum : clicknum});
+						// Save updated data in database.
+		                record[0].save(function(err, newClickNum) {
+		                	if (err) {
+		                		console.log(err);
+							} else {
+		                		console.log("Update the click number for current URL");
+		                		console.log(clicknum);
+		                		console.log(newClickNum);
+							}
+						});
+						console.log(originalUrl);
+
+						redis.set(shortUrl, JSON.stringify(record[0]), function(){
+							console.log("cache into redis: " + originalUrl);
+						});
+
+						res.redirect(originalUrl);
+					}
+				}
+			});
+
+
+
+            // db.collection('text').findOne({
+            //     title: title
+            // }, function (err, doc) {
+            //     if (err || !doc) callback(null);
+            //     //Book found in database, save to cache and return to client
+            //     else {
+            //         redis.set(title, JSON.stringify(doc), function () {
+            //             callback(doc);
+            //         });
+            //     }
+            // });
+        }
+    });
+
+	
 });
 
 
@@ -231,11 +279,11 @@ app.get("*", function(req, res){
 
 
 
-app.listen(3000, function(){
-	console.log("Serving on Port 3000");
-}); 
+// app.listen(3000, function(){
+// 	console.log("Serving on Port 3000");
+// }); 
 
-// app.listen(8080, process.env.IP, function(){
-// 	//console.log("Serving on Port " + precess.env.PORT);
-// 	console.log("Serving on Port 8080");
-// });
+app.listen(3000, process.env.IP, function(){
+	//console.log("Serving on Port " + precess.env.PORT);
+	console.log("Serving on Port 3000");
+});
