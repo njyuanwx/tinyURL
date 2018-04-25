@@ -106,7 +106,6 @@ app.post("/urls", function(req, res){
     	if (customizedUrl != "") { 
     		shortUrl = customizedUrl;
     		Url.find({shortURL : customizedUrl}, function(err, record){
-    			console.log("exist cusURL is " + record);
     			if (err) {
     				console.log(err);
     			}
@@ -131,7 +130,6 @@ app.post("/urls", function(req, res){
 
 					    //res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
 					    res.render("resultPage", {shortUrl : shortUrl, originalUrl : originalUrl});
-					    res.redirect("/urls");
 					    
     				}
     				else {
