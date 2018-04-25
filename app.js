@@ -131,6 +131,7 @@ app.post("/urls", function(req, res){
 
 					    //res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
 					    res.render("resultPage", {shortUrl : shortUrl, originalUrl : originalUrl});
+					    res.redirect("/urls");
 					    
     				}
     				else {
@@ -165,6 +166,12 @@ app.post("/urls", function(req, res){
     } 
 });
 
+
+//show transformation results, without the 'resubmit the form' problem
+app.get("/urls", function(req, res) {
+
+});
+
 // Redirects to show top 5 clicked URLs.
 app.get("/topClick", function(req, res) {
    Url.find({'clickNum': {$gt: 0}}, {}, {sort: {clickNum: -1}, limit: 5}, function(err, record) {
@@ -181,29 +188,17 @@ app.get("/topClick", function(req, res) {
 });
 
 // Redirects shortened URL to original URL.
-app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002      /:A/:B
+app.get("/:shortURL", function(req, res){
 	var shortUrl = req.params.shortURL;
 
 	redis.get(shortUrl, function (err, reply) {
         if (err){
         	console.log(err);
         }
-        else if (reply){ //Book exists in cache
+        else if (reply){ //data exists in cache
 			var record = JSON.parse(reply);
 			var originalUrl = record.originalURL;
-			var clicknum = record.clickNum + 1;
-			// // Updates the counter by 1.
-			// record.set({clickNum : clicknum});
-			// // Save updated data in database.
-   //          record.save(function(err, newClickNum) {
-   //          	if (err) {
-   //          		console.log(err);
-			// 	} else {
-   //          		console.log("Update the click number for current URL");
-   //          		console.log(clicknum);
-   //          		console.log(newClickNum);
-			// 	}
-			// });
+
 			console.log(originalUrl);
 			res.redirect(originalUrl);
 		}
@@ -221,20 +216,6 @@ app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002 
 						console.log("Find the target record");
 						console.log(record);
 						var originalUrl = record[0].originalURL;
-						var clicknum = record[0].clickNum + 1;
-						// Updates the counter by 1.
-						record[0].set({clickNum : clicknum});
-						// Save updated data in database.
-		                record[0].save(function(err, newClickNum) {
-		                	if (err) {
-		                		console.log(err);
-							} else {
-		                		console.log("Update the click number for current URL");
-		                		console.log(clicknum);
-		                		console.log(newClickNum);
-							}
-						});
-						console.log(originalUrl);
 
 						redis.set(shortUrl, JSON.stringify(record[0]), function(){
 							console.log("cache into redis: " + originalUrl);
@@ -245,21 +226,33 @@ app.get("/:shortURL", function(req, res){   // http://localhost:3000/000001/002 
 				}
 			});
 
-
-
-            // db.collection('text').findOne({
-            //     title: title
-            // }, function (err, doc) {
-            //     if (err || !doc) callback(null);
-            //     //Book found in database, save to cache and return to client
-            //     else {
-            //         redis.set(title, JSON.stringify(doc), function () {
-            //             callback(doc);
-            //         });
-            //     }
-            // });
         }
     });
+
+	//Update the count num of the visited url asynchronized
+	Url.find({"shortURL" : shortUrl}, {}, function(err, record){
+		if (err) {
+			console.log(err);
+		}
+		else {
+			if (record.length > 0) {
+				var clicknum = record[0].clickNum + 1;
+				// Updates the counter by 1.
+				record[0].set({clickNum : clicknum});
+				// Save updated data in database.
+                record[0].save(function(err, newClickNum) {
+                	if (err) {
+                		console.log(err);
+					} else {
+                		console.log("Update the click number for current URL");
+                		console.log(clicknum);
+                		console.log(newClickNum);
+					}
+				});
+			}
+		}
+
+	});
 
 	
 });
