@@ -48,8 +48,6 @@ var Url = mongoose.model("Url", tinyURLSchema);
 var charmap = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 
-
-
 // "/" => "homepage"
 app.get("/", function(req, res){
 	// console.log("Request IP " + req.ip);
@@ -335,12 +333,6 @@ app.get("/:shortURL", function(req, res){
 
 	
 });
-
-
-// app.get("/:A/:B", function(){
-// 	var a = req.params.A;
-// 	var b = 
-// })
 
 
 // other urls without meaning
