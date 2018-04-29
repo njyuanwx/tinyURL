@@ -44,29 +44,10 @@ var Url = mongoose.model("Url", tinyURLSchema);
 // });
 
 //get the counter when server started (asynchronous!!!!!)
-var dbcounter = 0;
+//var dbcounter = 0;
 var charmap = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-Url.count({}, function(err, count){
-	if (err) {
-		console.log(err);
-		// stop the server
-		app.stop();
-	}
-	else {
-		dbcounter = count + 1;
-		console.log(dbcounter);
-	}
-});
 
-Url.find({}, function(err, records){
-	if (err) {
-		console.log(err);
-	}
-	else {
-		console.log(records);
-	}
-});
 
 
 // "/" => "homepage"
@@ -81,7 +62,8 @@ app.get("/", function(req, res){
 //post
 app.post("/urls", function(req, res){
 	//tranform a url
-    var originalUrl = req.body.originalURL;
+
+	var originalUrl = req.body.originalURL;
     var customizedUrl = req.body.customizedURL;
 
 
@@ -95,12 +77,8 @@ app.post("/urls", function(req, res){
     	if (originalUrl.substring(0, 8) != "https://" && originalUrl.substring(0, 7) != "http://") {
     		originalUrl = "http://" + originalUrl;
 		}
-    	//todo : multiple server transform function
-    	var shortUrl = "";
-    	for (var i=0; i<6; i++) {
-    		shortUrl = charmap.charAt(dbcounter%62) + shortUrl;
-    		dbcounter = dbcounter/62;
-    	}
+
+		var shortUrl = "";
 
 	    // Checks whether if the customized URL blank is empty. If yes, assigned customized URL to shortened URL.
     	if (customizedUrl != "") { 
@@ -129,7 +107,13 @@ app.post("/urls", function(req, res){
 							});
 
 					    //res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
-					    res.render("resultPage", {shortUrl : shortUrl, originalUrl : originalUrl});
+					    
+
+					    //res.render("resultPage", {shortUrl : shortUrl, originalUrl : originalUrl});
+					    // req.session.shortURL = shortUrl;
+					    // req.session.longURL = originalUrl;
+
+					    res.redirect("/resultPage/" + shortUrl);
 					    
     				}
     				else {
@@ -140,6 +124,72 @@ app.post("/urls", function(req, res){
     		});
     	}
     	else {
+
+
+    		//todo : multiple server transform function
+    		
+
+    		// //make sure shortUrl generated does not exist already in DB
+    		// var isValidSU = false;
+
+    		// const SUcheck = async() => {
+    		// 	while(!isValidSU) {
+
+	    	// 		console.log(isValidSU);
+
+	    	// 		$this = this;
+
+	    	// 		shortUrl = "";
+
+	    	// 		var tempCounter = dbcounter;
+
+		    // 		for (var i=0; i<6; i++) {
+		    // 			shortUrl = charmap.charAt(tempCounter%62) + shortUrl;
+		    // 			tempCounter = tempCounter/62;
+		    // 		}
+
+		    // 		await(Url.find({shortURL : shortUrl}, function(err, records){
+		    // 			if (err) {
+		    // 				console.log(err);
+		    // 			}
+		    // 			else {
+		    // 				if (records.length == 0) {
+		    // 					console.log("No duplicate");
+		    // 					$this.isValidSU = true;
+		    // 				}
+		    // 				else {
+		    // 					console.log(records);
+		    // 					dbcounter = dbcounter + 1;
+		    // 				}
+		    // 			}
+		    // 		}));
+    		// 	}
+    		// }
+
+    		var dbcounter = 0;
+
+    		//get the total number of records   		
+			Url.count({}, function(err, count){
+				if (err) {
+					console.log(err);
+					// stop the server
+					app.stop();
+				}
+				else {
+					dbcounter = count + 1;
+					console.log(dbcounter);
+				}
+			});
+
+    		var tempCounter = dbcounter;
+
+    		for (var i=0; i<6; i++) {
+    			shortUrl = charmap.charAt(tempCounter%62) + shortUrl;
+    			tempCounter = tempCounter/62;
+    		}  		
+
+    		//should check the validation of new generated shorturl
+
     		Url.create(
 		    	{
 		    		shortURL : shortUrl,
@@ -153,21 +203,46 @@ app.post("/urls", function(req, res){
 					else {
 						console.log("Create and save a new TinyURL");
 						console.log(newTinyURL);
+
+						console.log(dbcounter);
 						dbcounter += 1;
-						
+						console.log(dbcounter);						
 					}
 				});
 
 		    //res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
-		    res.render("resultPage", {shortUrl : shortUrl, originalUrl : originalUrl});
+
+		    //res.render("resultPage", {shortUrl : shortUrl, originalUrl : originalUrl});
+		    //var mysession = req.session;
+		 	//mysession.shortURL = shortUrl;
+			//mysession.longURL = originalUrl;
+			res.redirect("/resultPage/" + shortUrl);
     	}	     
     } 
+
+
+    
 });
 
 
 //show transformation results, without the 'resubmit the form' problem
-app.get("/urls", function(req, res) {
-
+app.get("/resultPage/:shortURL", function(req, res) {
+	var shortUrl = req.params.shortURL;
+	console.log("redirect to " + shortUrl);
+	Url.find({shortURL : shortUrl}, function(err, record){
+		if (err) {
+			console.log(err);
+		}
+		else {
+			if (record.length == 0) {
+				res.render("404page");
+			}
+			else {
+				var originalUrl = record[0].originalURL;
+				res.render("resultPage", {shortUrl : shortUrl, originalUrl : originalUrl});
+			}
+		}
+    });
 });
 
 // Redirects to show top 5 clicked URLs.
