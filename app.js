@@ -103,6 +103,7 @@ app.post("/urls", function(req, res){
 								else {
 									console.log("Create and save a new TinyURL");
 									console.log(newTinyURL);
+									res.redirect("/resultPage/" + shortUrl);
 								}
 							});
 
@@ -113,7 +114,7 @@ app.post("/urls", function(req, res){
 					    // req.session.shortURL = shortUrl;
 					    // req.session.longURL = originalUrl;
 
-					    res.redirect("/resultPage/" + shortUrl);
+					    
 					    
     				}
     				else {
@@ -178,37 +179,42 @@ app.post("/urls", function(req, res){
 				else {
 					dbcounter = count + 1;
 					console.log(dbcounter);
+
+					var tempCounter = dbcounter;
+
+		    		for (var i=0; i<6; i++) {
+		    			shortUrl = charmap.charAt(tempCounter%62) + shortUrl;
+		    			tempCounter = tempCounter/62;
+		    		}
+
+		    		Url.create(
+			    	{
+			    		shortURL : shortUrl,
+			    		originalURL : originalUrl,
+	                    clickNum: 0
+
+					}, function(err, newTinyURL){
+						if (err) {
+							console.log(err);
+						}
+						else {
+							console.log("Create and save a new TinyURL");
+							console.log(newTinyURL);
+
+							console.log(dbcounter);
+							dbcounter += 1;
+							console.log(dbcounter);	
+							res.redirect("/resultPage/" + shortUrl);					
+						}
+					});
 				}
 			});
 
-    		var tempCounter = dbcounter;
-
-    		for (var i=0; i<6; i++) {
-    			shortUrl = charmap.charAt(tempCounter%62) + shortUrl;
-    			tempCounter = tempCounter/62;
-    		}  		
+  		
 
     		//should check the validation of new generated shorturl
 
-    		Url.create(
-		    	{
-		    		shortURL : shortUrl,
-		    		originalURL : originalUrl,
-                    clickNum: 0
-
-				}, function(err, newTinyURL){
-					if (err) {
-						console.log(err);
-					}
-					else {
-						console.log("Create and save a new TinyURL");
-						console.log(newTinyURL);
-
-						console.log(dbcounter);
-						dbcounter += 1;
-						console.log(dbcounter);						
-					}
-				});
+    		
 
 		    //res.send("URL you want to tranform is " + originalUrl + " and Shortened URL is " + shortUrl);
 
@@ -216,7 +222,7 @@ app.post("/urls", function(req, res){
 		    //var mysession = req.session;
 		 	//mysession.shortURL = shortUrl;
 			//mysession.longURL = originalUrl;
-			res.redirect("/resultPage/" + shortUrl);
+			
     	}	     
     } 
 
