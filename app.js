@@ -178,33 +178,35 @@ app.post("/urls", function(req, res){
 					dbcounter = count + 1;
 					console.log(dbcounter);
 
-					var tempCounter = dbcounter;
+					checkValidUrl(dbcounter, originalUrl, res);
 
-		    		for (var i=0; i<6; i++) {
-		    			shortUrl = charmap.charAt(tempCounter%62) + shortUrl;
-		    			tempCounter = tempCounter/62;
-		    		}
+					// var tempCounter = dbcounter;
 
-		    		Url.create(
-			    	{
-			    		shortURL : shortUrl,
-			    		originalURL : originalUrl,
-	                    clickNum: 0
+		   //  		for (var i=0; i<6; i++) {
+		   //  			shortUrl = charmap.charAt(tempCounter%62) + shortUrl;
+		   //  			tempCounter = tempCounter/62;
+		   //  		}
 
-					}, function(err, newTinyURL){
-						if (err) {
-							console.log(err);
-						}
-						else {
-							console.log("Create and save a new TinyURL");
-							console.log(newTinyURL);
+		   //  		Url.create(
+			  //   	{
+			  //   		shortURL : shortUrl,
+			  //   		originalURL : originalUrl,
+	    //                 clickNum: 0
 
-							console.log(dbcounter);
-							dbcounter += 1;
-							console.log(dbcounter);	
-							res.redirect("/resultPage/" + shortUrl);					
-						}
-					});
+					// }, function(err, newTinyURL){
+					// 	if (err) {
+					// 		console.log(err);
+					// 	}
+					// 	else {
+					// 		console.log("Create and save a new TinyURL");
+					// 		console.log(newTinyURL);
+
+					// 		console.log(dbcounter);
+					// 		dbcounter += 1;
+					// 		console.log(dbcounter);	
+					// 		res.redirect("/resultPage/" + shortUrl);					
+					// 	}
+					// });
 				}
 			});
 
@@ -223,10 +225,51 @@ app.post("/urls", function(req, res){
 			
     	}	     
     } 
-
-
     
 });
+
+
+function checkValidUrl(counter, originalUrl, res) {
+	var tempCounter = counter;
+	var shortUrl = "";
+
+	for (var i=0; i<6; i++) {
+		shortUrl = charmap.charAt(tempCounter%62) + shortUrl;
+		tempCounter = tempCounter/62;
+	}
+
+	Url.find({shortURL : shortUrl}, function(err, records){
+		if (err) {
+			console.log(err);
+		}
+		else {
+			if (records.length == 0) {
+				console.log("No duplicate");
+				Url.create(
+		    	{
+		    		shortURL : shortUrl,
+		    		originalURL : originalUrl,
+                    clickNum: 0
+
+				}, function(err, newTinyURL){
+					if (err) {
+						console.log(err);
+					}
+					else {
+						console.log("Create and save a new TinyURL");
+						console.log(newTinyURL);
+	
+						res.redirect("/resultPage/" + shortUrl);					
+					}
+				});
+			}
+			else {
+				console.log(records);
+				checkValidUrl(counter+1, originalUrl, res);
+			}
+		}
+	});
+}
 
 
 //show transformation results, without the 'resubmit the form' problem
@@ -340,6 +383,34 @@ app.get("*", function(req, res){
 	// res.send("404: Page Not Found");
 	res.render("404page");
 });
+
+
+// functionA({}, functionB){
+// 	xxxxx;
+// 	sdfds = functionB();
+// }
+
+// dbcounter = count();
+
+
+// functionA(){
+// 	url = generate(dbcounter);
+// 	check(url);
+// 	if ()
+// 		dbcounter++;
+// 		fucntionA();
+// 	}
+// 	else {
+
+// 	}
+// }
+
+
+// functionB(){
+
+// }
+
+
 
 
 
